@@ -178,7 +178,7 @@
       "typeVersion": 3,
       "position": [
         -112,
-        -96
+        -112
       ],
       "id": "cfabfdf1-0d3d-4d9a-a97b-0d8085a118db"
     },
@@ -303,8 +303,8 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        192,
-        -336
+        256,
+        -320
       ],
       "id": "7df86a4b-3264-46be-afa5-b1b3d9df37ed",
       "credentials": {
@@ -454,15 +454,15 @@
           "mode": "name",
           "value": "#incoming-qa"
         },
-        "text": "={{ $json.route.toUpperCase() }} {{ $json.extracted?.vendor_name || 'unreadable' }} / {{ $json.extracted?.part_number || '?' }} / lot {{ $json.extracted?.lot_number || '?' }}\n{{ $json.verdict?.human_summary || $json.error }}\nrun {{ $json.run_id }}",
+        "text": "=*{{ $json.route.toUpperCase() }}* — {{ $json.extracted?.vendor_name || 'unreadable' }}\nPart: `{{ $json.extracted?.part_number || '?' }}`  |  Lot: `{{ $json.extracted?.lot_number || '?' }}`\n\n{{ $json.verdict?.human_summary || $json.error }}\n\n_run {{ $json.run_id }}_",
         "otherOptions": {}
       },
       "name": "Slack: notify QA",
       "type": "n8n-nodes-base.slack",
       "typeVersion": 2.2,
       "position": [
-        304,
-        288
+        336,
+        192
       ],
       "id": "53b0bcc4-4a72-41c1-9ee3-7f265c337038",
       "webhookId": "9043a76a-7434-489c-aa05-f851b0a07aba",
@@ -484,8 +484,8 @@
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
       "position": [
-        -48,
-        400
+        224,
+        336
       ],
       "id": "53b2fe8f-c153-495b-b054-ae3eea2542b4",
       "webhookId": "223a53ff-e11c-4945-be86-d0062e5e06ab",
@@ -701,7 +701,7 @@
     "executionOrder": "v1",
     "availableInMCP": false
   },
-  "versionId": "3c1fcd1f-0dee-4288-814d-da61379c0144",
+  "versionId": "5061fd44-1533-4e9f-98aa-ae615454f41b",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "3ce6f64b34b984825b1f2afe6e6533553d73741835343a5da51b21eb50527155"
