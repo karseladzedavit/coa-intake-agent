@@ -1,0 +1,567 @@
+{
+  "name": "CoA Intake Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "q": "has:attachment"
+        },
+        "options": {
+          "downloadAttachments": true
+        }
+      },
+      "name": "Gmail Trigger",
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -720,
+        -96
+      ],
+      "id": "ef011ad0-c877-40d5-a517-f6ed92acc89f",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "KBR9AzNiMhTscTPw",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:8000/process",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "file",
+              "inputDataFieldName": "attachment_0"
+            },
+            {
+              "name": "sender",
+              "value": "test"
+            },
+            {
+              "name": "subject",
+              "value": "test"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 180000
+        }
+      },
+      "name": "Agent",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -400,
+        -96
+      ],
+      "id": "c0fc2867-17c1-4df0-977c-488b959d8050"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.route }}",
+                    "rightValue": "release",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "release"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.route }}",
+                    "rightValue": "review",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "review"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.route }}",
+                    "rightValue": "hold",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "hold"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.route }}",
+                    "rightValue": "reject",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "reject"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Route",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3,
+      "position": [
+        -112,
+        -96
+      ],
+      "id": "cfabfdf1-0d3d-4d9a-a97b-0d8085a118db"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1LbVHFpCqHb3wpAcTOGhpgwXTc8uGekjtQP23MgpU5rg",
+          "mode": "list",
+          "cachedResultName": "Coa Intake Log",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1LbVHFpCqHb3wpAcTOGhpgwXTc8uGekjtQP23MgpU5rg/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Released lots",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1LbVHFpCqHb3wpAcTOGhpgwXTc8uGekjtQP23MgpU5rg/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "run_id": "={{ $json.run_id }}",
+            "vendor": "={{ $json.extracted.vendor_name }}",
+            "part": "={{ $json.extracted.part_number }}",
+            "lot": "={{ $json.extracted.lot_number }}",
+            "qty": "={{ $json.extracted.quantity }}",
+            "po": "={{ $json.extracted.customer_po }}",
+            "confidence": "={{ $json.extracted.overall_confidence }}",
+            "released_at": "={{ $now.toISO() }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "run_id",
+              "displayName": "run_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "vendor",
+              "displayName": "vendor",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "part",
+              "displayName": "part",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "lot",
+              "displayName": "lot",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "qty",
+              "displayName": "qty",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "po",
+              "displayName": "po",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "confidence",
+              "displayName": "confidence",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "released_at",
+              "displayName": "released_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "name": "Sheet: Released lots",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        192,
+        -336
+      ],
+      "id": "7df86a4b-3264-46be-afa5-b1b3d9df37ed",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "cgBEIzlLvPyn6wQo",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1LbVHFpCqHb3wpAcTOGhpgwXTc8uGekjtQP23MgpU5rg",
+          "mode": "list",
+          "cachedResultName": "Coa Intake Log",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1LbVHFpCqHb3wpAcTOGhpgwXTc8uGekjtQP23MgpU5rg/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 2020259154,
+          "mode": "list",
+          "cachedResultName": "QA Hold queue",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1LbVHFpCqHb3wpAcTOGhpgwXTc8uGekjtQP23MgpU5rg/edit#gid=2020259154"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "run_id": "={{ $json.run_id }}",
+            "route": "={{ $json.route }}",
+            "vendor": "={{ $json.extracted?.vendor_name }}",
+            "part": "={{ $json.extracted?.part_number }}",
+            "lot": "={{ $json.extracted?.lot_number }}",
+            "reasons": "={{ $json.verdict?.reasons?.join(' | ') }}",
+            "summary": "={{ $json.verdict?.human_summary || $json.error }}",
+            "status": "open"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "run_id",
+              "displayName": "run_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "route",
+              "displayName": "route",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "vendor",
+              "displayName": "vendor",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "part",
+              "displayName": "part",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "lot",
+              "displayName": "lot",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "reasons",
+              "displayName": "reasons",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "summary",
+              "displayName": "summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "name": "Sheet: QA Hold queue",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        272,
+        -96
+      ],
+      "id": "9c5b67cb-cd20-4122-b703-937369e2eeff",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "cgBEIzlLvPyn6wQo",
+          "name": "Google Sheets account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "mode": "name",
+          "value": "#incoming-qa"
+        },
+        "text": "={{ $json.route.toUpperCase() }} {{ $json.extracted?.vendor_name || 'unreadable' }} / {{ $json.extracted?.part_number || '?' }} / lot {{ $json.extracted?.lot_number || '?' }}\n{{ $json.verdict?.human_summary || $json.error }}\nrun {{ $json.run_id }}",
+        "otherOptions": {}
+      },
+      "name": "Slack: notify QA",
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.2,
+      "position": [
+        256,
+        64
+      ],
+      "id": "53b0bcc4-4a72-41c1-9ee3-7f265c337038",
+      "webhookId": "9043a76a-7434-489c-aa05-f851b0a07aba",
+      "credentials": {
+        "slackApi": {
+          "id": "fQcNndY2oUHXSRyp",
+          "name": "Slack account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "reply",
+        "messageId": "={{ $('Gmail Trigger').item.json.id }}",
+        "message": "The attachment you sent does not appear to be a certificate of analysis or conformance. Please resend the correct document for this shipment.",
+        "options": {}
+      },
+      "name": "Gmail: ask for correct doc",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        192,
+        272
+      ],
+      "id": "53b2fe8f-c153-495b-b054-ae3eea2542b4",
+      "webhookId": "223a53ff-e11c-4945-be86-d0062e5e06ab",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "KBR9AzNiMhTscTPw",
+          "name": "Gmail account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agent": {
+      "main": [
+        [
+          {
+            "node": "Route",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route": {
+      "main": [
+        [
+          {
+            "node": "Sheet: Released lots",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Sheet: QA Hold queue",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Slack: notify QA",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Sheet: QA Hold queue",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Slack: notify QA",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Gmail: ask for correct doc",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "availableInMCP": false
+  },
+  "versionId": "be6134bd-8cb4-460d-b576-6d9946cd548a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3ce6f64b34b984825b1f2afe6e6533553d73741835343a5da51b21eb50527155"
+  },
+  "id": "2yHWiGjUinvbWypUVBYAS",
+  "tags": []
+}
