@@ -1,5 +1,5 @@
 {
-  "name": "CoA Intake Agent",
+  "name": "coa-intake",
   "nodes": [
     {
       "parameters": {
@@ -77,7 +77,9 @@
               "conditions": {
                 "options": {
                   "caseSensitive": true,
-                  "typeValidation": "strict"
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
                 },
                 "conditions": [
                   {
@@ -86,7 +88,8 @@
                     "operator": {
                       "type": "string",
                       "operation": "equals"
-                    }
+                    },
+                    "id": "edb5f8f9-3ca7-4d23-90cf-cfae29e0aef4"
                   }
                 ],
                 "combinator": "and"
@@ -98,7 +101,9 @@
               "conditions": {
                 "options": {
                   "caseSensitive": true,
-                  "typeValidation": "strict"
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
                 },
                 "conditions": [
                   {
@@ -107,7 +112,8 @@
                     "operator": {
                       "type": "string",
                       "operation": "equals"
-                    }
+                    },
+                    "id": "da801a47-d15d-498a-81af-287589771556"
                   }
                 ],
                 "combinator": "and"
@@ -119,7 +125,9 @@
               "conditions": {
                 "options": {
                   "caseSensitive": true,
-                  "typeValidation": "strict"
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
                 },
                 "conditions": [
                   {
@@ -128,7 +136,8 @@
                     "operator": {
                       "type": "string",
                       "operation": "equals"
-                    }
+                    },
+                    "id": "019aa4dd-5a9f-43a2-9e06-3d5728f8fe54"
                   }
                 ],
                 "combinator": "and"
@@ -140,7 +149,9 @@
               "conditions": {
                 "options": {
                   "caseSensitive": true,
-                  "typeValidation": "strict"
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 1
                 },
                 "conditions": [
                   {
@@ -149,7 +160,8 @@
                     "operator": {
                       "type": "string",
                       "operation": "equals"
-                    }
+                    },
+                    "id": "e548fff7-fe4c-4699-8efd-758dba29abed"
                   }
                 ],
                 "combinator": "and"
@@ -423,8 +435,8 @@
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.5,
       "position": [
-        272,
-        -96
+        368,
+        16
       ],
       "id": "9c5b67cb-cd20-4122-b703-937369e2eeff",
       "credentials": {
@@ -449,8 +461,8 @@
       "type": "n8n-nodes-base.slack",
       "typeVersion": 2.2,
       "position": [
-        256,
-        64
+        304,
+        288
       ],
       "id": "53b0bcc4-4a72-41c1-9ee3-7f265c337038",
       "webhookId": "9043a76a-7434-489c-aa05-f851b0a07aba",
@@ -472,8 +484,8 @@
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
       "position": [
-        192,
-        272
+        -48,
+        400
       ],
       "id": "53b2fe8f-c153-495b-b054-ae3eea2542b4",
       "webhookId": "223a53ff-e11c-4945-be86-d0062e5e06ab",
@@ -481,6 +493,138 @@
         "gmailOAuth2": {
           "id": "KBR9AzNiMhTscTPw",
           "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1LbVHFpCqHb3wpAcTOGhpgwXTc8uGekjtQP23MgpU5rg",
+          "mode": "list",
+          "cachedResultName": "Coa Intake Log",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1LbVHFpCqHb3wpAcTOGhpgwXTc8uGekjtQP23MgpU5rg/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 64367009,
+          "mode": "list",
+          "cachedResultName": "QA Review queue",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1LbVHFpCqHb3wpAcTOGhpgwXTc8uGekjtQP23MgpU5rg/edit#gid=64367009"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "run_id": "={{ $json.run_id }}",
+            "route": "={{ $json.route }}",
+            "vendor": "={{ $json.extracted?.vendor_name }}",
+            "part": "={{ $json.extracted?.part_number }}",
+            "lot": "={{ $json.extracted?.lot_number }}",
+            "reasons": "={{ $json.verdict?.reasons?.join(' | ') }}",
+            "summary": "={{ $json.verdict?.human_summary || $json.error }}",
+            "status": "open"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "run_id",
+              "displayName": "run_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "route",
+              "displayName": "route",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "vendor",
+              "displayName": "vendor",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "part",
+              "displayName": "part",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "lot",
+              "displayName": "lot",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "reasons",
+              "displayName": "reasons",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "summary",
+              "displayName": "summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "status",
+              "displayName": "status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "name": "Sheet: QA Review queue",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        352,
+        -176
+      ],
+      "id": "d7d60c8b-4b22-492b-9b1a-920816d3b0e1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "cgBEIzlLvPyn6wQo",
+          "name": "Google Sheets account 3"
         }
       }
     }
@@ -520,12 +664,12 @@
         ],
         [
           {
-            "node": "Sheet: QA Hold queue",
+            "node": "Slack: notify QA",
             "type": "main",
             "index": 0
           },
           {
-            "node": "Slack: notify QA",
+            "node": "Sheet: QA Review queue",
             "type": "main",
             "index": 0
           }
@@ -557,7 +701,7 @@
     "executionOrder": "v1",
     "availableInMCP": false
   },
-  "versionId": "be6134bd-8cb4-460d-b576-6d9946cd548a",
+  "versionId": "3c1fcd1f-0dee-4288-814d-da61379c0144",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "3ce6f64b34b984825b1f2afe6e6533553d73741835343a5da51b21eb50527155"
