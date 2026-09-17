@@ -12,6 +12,7 @@ load_dotenv()
 client = OpenAI()
 MODEL = os.getenv("EXTRACTION_MODEL", "gpt-4.1")
 VERIFY_MODEL = os.getenv("VERIFY_MODEL", "gpt-4o")
+TIEBREAK_MODEL = os.getenv("TIEBREAK_MODEL", "gpt-4.1-mini")
 MAX_PAGES = 3
 SCAN_CONFIDENCE_CAP = 0.85
 KEY_FIELDS = ("part_number", "lot_number", "customer_po", "issue_date", "vendor_name")
@@ -78,7 +79,7 @@ def extract(file_bytes: bytes, media_type: str = "application/pdf") -> Certifica
 
     if any(disagree(lambda r, f=f: getattr(r, f)) for f in KEY_FIELDS) or \
        any(disagree(lambda r, n=t.name: next(((x.value, x.pass_only) for x in r.tests if x.name == n), None)) for t in result.tests):
-        reads.append(_read(content, VERIFY_MODEL))
+        reads.append(_read(content, TIEBREAK_MODEL))
 
     for f in KEY_FIELDS:
         value, votes = _majority([getattr(r, f) for r in reads])

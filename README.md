@@ -105,10 +105,16 @@ does.
 
 ## Why extraction runs twice, and at temperature 0
 
-Two different models read every document. If they disagree on a key field
-(vendor, part number, lot number, PO, date) or any test value, a third read
-is taken and the majority wins, with a note recorded and confidence
-lowered.
+Every document is read by two different models. If they disagree on a key
+field (vendor, part number, lot number, PO, date) or any test value, a
+third, distinct model reads the document as a tiebreaker, and the majority
+answer wins, with a note recorded and confidence lowered.
+
+The tiebreaker deliberately uses a third model rather than re-asking one of
+the first two. At temperature 0, asking the same model the same question
+twice produces a near-identical answer, so a repeat call is not a second
+opinion, it just doubles that model's vote. A genuinely different model is
+what makes the majority vote meaningful.
 
 All reads run at temperature 0, so the same document produces the same
 extraction on every run. Multi-read voting then reflects genuine ambiguity
